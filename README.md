@@ -4,11 +4,11 @@ Organização de comprovantes e prazos de garantia de produtos.
 
 ## Estado atual
 
-Projeto em planejamento. Este repositório contém a definição do projeto; ainda não há aplicação executável, interface ou testes implementados.
+MVP executável em branch de desenvolvimento, com testes automatizados. Cálculo da validade de garantia e dias restantes. Ainda não há cadastro persistente, comprovantes ou alertas.
 
-## Tecnologias propostas
+## Tecnologias implementadas
 
-Node.js, React e SQLite. A escolha será confirmada ao iniciar a implementação.
+Node.js 20+ (JavaScript).
 
 ## Escopo da primeira versão
 
@@ -25,7 +25,13 @@ Node.js, React e SQLite. A escolha será confirmada ao iniciar a implementação
 
 ## Desenvolvimento
 
-As funcionalidades acima são planejadas. Os comandos de instalação e a estrutura do código serão documentados junto da primeira implementação. Não há integrações externas ou serviços ativos nesta etapa.
+Execute na raiz do repositório:
+
+```bash
+npm test
+```
+
+O GitHub Actions executa a validação em pushes e pull requests. Este é um núcleo demonstrativo; as funcionalidades ainda marcadas como pendentes na lista acima continuam planejadas.
 
 ## Privacidade e configuração
 
