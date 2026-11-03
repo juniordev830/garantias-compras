@@ -1,42 +1,39 @@
 # Garantias e Compras
 
-Organização de comprovantes e prazos de garantia de produtos.
+Biblioteca em **JavaScript (Node.js 20+)** para consultar prazos de garantia e identificar compras próximas do vencimento.
 
-## Estado atual
+## Funcionalidades
 
-MVP executável em branch de desenvolvimento, com testes automatizados. Cálculo da validade de garantia e dias restantes. Ainda não há cadastro persistente, comprovantes ou alertas.
+- `daysUntilWarrantyExpires(purchaseDate, warrantyDays, today)` devolve a data de expiração, dias restantes e indicador de garantia vencida.
+- `upcomingWarrantyExpirations(purchases, today, withinDays = 30)` retorna apenas compras com garantia vencendo entre hoje e os próximos `withinDays` dias, ordenadas por proximidade e ID.
+- Usa a **data de calendário em UTC** para definir os dias restantes, evitando que algumas horas de diferença sejam contadas como um dia inteiro. O intervalo máximo da garantia e da consulta é 3.650 dias.
+- Valida entradas, relógio, IDs duplicados, datas inválidas e tamanho da coleção (até 10 mil compras).
 
-## Tecnologias implementadas
+## Exemplo
 
-Node.js 20+ (JavaScript).
+```js
+import { upcomingWarrantyExpirations } from './src/warranty.js';
 
-## Escopo da primeira versão
+const today = new Date('2026-11-03T12:00:00Z');
+const purchases = [
+  { id: 'notebook-1', purchaseDate: '2026-10-04', warrantyDays: 30 },
+  { id: 'monitor-1', purchaseDate: '2026-10-20', warrantyDays: 90 },
+];
+const due = upcomingWarrantyExpirations(purchases, today, 7);
+console.log(due.map(({ id, remainingDays }) => ({ id, remainingDays })));
+// [{ id: 'notebook-1', remainingDays: 0 }]
+```
 
-- [ ] Cadastrar compras e prazos
-- [ ] Anexar comprovantes
-- [ ] Filtrar garantias próximas do vencimento
-
-## Critérios para concluir a primeira versão
-
-- [ ] Implementar o fluxo principal com validação de entradas e tratamento de erros.
-- [ ] Documentar instalação, configuração e execução com comandos reproduzíveis.
-- [ ] Adicionar exemplos de uso e dados fictícios.
-- [ ] Verificar os casos principais e limites e registrar os resultados.
-
-## Desenvolvimento
-
-Execute na raiz do repositório:
+## Testes
 
 ```bash
 npm test
 ```
 
-O GitHub Actions executa a validação em pushes e pull requests. Este é um núcleo demonstrativo; as funcionalidades ainda marcadas como pendentes na lista acima continuam planejadas.
+O GitHub Actions executa os testes de ordenação, limites, entradas inválidas e datas de calendário em pushes e pull requests.
 
-## Privacidade e configuração
+## Limitações
 
-Usar dados fictícios nos exemplos e manter senhas, tokens, arquivos pessoais e credenciais fora do controle de versão.
+É um **núcleo de domínio**, sem cadastro persistente, upload de notas fiscais, notificações, bancos de dados ou regras legais específicas. As datas são comparadas por dia **UTC**; aplicativos voltados a consumidores no Brasil deverão escolher conscientemente o fuso de calendário e as regras contratuais de vencimento. As compras usadas nos exemplos são fictícias. Não versionar comprovantes ou dados pessoais.
 
-## Licença
-
-Ainda não definida.
+Licença: ainda não definida.
