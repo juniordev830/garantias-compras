@@ -51,4 +51,6 @@ test('rejects duplicate IDs, bad entries and invalid window', () => {
   assert.throws(() => upcomingWarrantyExpirations([{ ...purchase, warrantyDays: -1 }], now), RangeError);
   assert.throws(() => upcomingWarrantyExpirations([purchase], now, -1), RangeError);
   assert.throws(() => upcomingWarrantyExpirations([purchase], now, 3651), RangeError);
+  assert.throws(() => upcomingWarrantyExpirations([], new Date('invalid')), RangeError);
+  assert.throws(() => daysUntilWarrantyExpires(null, 30, now), RangeError);
 });
