@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { addPurchase, listWarranties, removePurchase, summarizeWarranties } from './catalog.js';
 import { loadCatalog, saveCatalog } from './storage.js';
+import { exportWarrantiesCsv } from './export.js';
 
 const HELP = [
   'Garantias e Compras — uso:',
@@ -8,6 +9,7 @@ const HELP = [
   '  node src/cli.js list [all|valid|expiring|expired] [BUSCA]',
   '  node src/cli.js expiring [DIAS]',
   '  node src/cli.js summary',
+  '  node src/cli.js export-csv  # CSV no terminal; redirecione para arquivo local',
   '  node src/cli.js remove ID',
   '',
   'Os dados são locais. Não cole dados reais ou pessoais em repositórios.',
@@ -83,6 +85,11 @@ export async function run(args) {
         status: 'expiring',
         withinDays: rest[0] ? parseInteger(rest[0], 'dias') : 30,
       }));
+      return;
+    }
+    case 'export-csv': {
+      if (rest.length) throw new RangeError('uso: export-csv');
+      process.stdout.write(exportWarrantiesCsv(catalog));
       return;
     }
     case 'summary': {
