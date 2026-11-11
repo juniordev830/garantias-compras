@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { addPurchase, listWarranties, removePurchase, summarizeWarranties } from './catalog.js';
+import { addPurchase, updatePurchase, listWarranties, removePurchase, summarizeWarranties } from './catalog.js';
 import { loadCatalog, saveCatalog } from './storage.js';
 import { exportWarrantiesCsv } from './export.js';
 
@@ -7,6 +7,7 @@ const HELP = [
   'Garantias e Compras — uso:',
   '  node src/cli.js add ID PRODUTO VENDEDOR AAAA-MM-DD DIAS PRECO-CENTAVOS [NOTA]',
   '  node src/cli.js list [all|valid|expiring|expired] [BUSCA]',
+  '  node src/cli.js edit ID CAMPO VALOR',
   '  node src/cli.js expiring [DIAS]',
   '  node src/cli.js summary',
   '  node src/cli.js export-csv  # CSV no terminal; redirecione para arquivo local',
@@ -63,6 +64,24 @@ export async function run(args) {
       });
       await saveCatalog(next);
       console.log('Compra cadastrada: ' + id);
+      return;
+    }
+    case 'edit': {
+      if (rest.length !== 3) throw new RangeError('uso: edit ID CAMPO VALOR');
+      const [id, field, rawValue] = rest;
+      const editableFields = new Set([
+        'product', 'seller', 'purchaseDate', 'warrantyDays',
+        'priceCents', 'receiptNote',
+      ]);
+      if (!editableFields.has(field)) {
+        throw new RangeError('campo inválido. Use product, seller, purchaseDate, warrantyDays, priceCents ou receiptNote');
+      }
+      const value = field === 'warrantyDays' || field === 'priceCents'
+        ? parseInteger(rawValue, field)
+        : rawValue;
+      const next = updatePurchase(catalog, id, { [field]: value });
+      await saveCatalog(next);
+      console.log('Compra atualizada: ' + id + ' (' + field + ')');
       return;
     }
     case 'remove': {
