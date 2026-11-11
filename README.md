@@ -12,6 +12,7 @@ Organizador local em **Node.js 20+**, sem dependências externas, para cadastrar
 - Resumo de prazos, valor total e próxima data de vencimento.
 - Persistência **local** em JSON versionado, com gravação via arquivo temporário.
 - Testes da biblioteca, armazenamento e comandos de terminal.
+- Exportação CSV de compras e prazos para planilhas, com proteção contra fórmulas e sem incluir anotações de comprovantes.
 
 **Limitações:** não faz upload de comprovantes, não envia notificações e não possui interface gráfica. O campo `receiptNote` registra somente uma anotação textual; nenhum documento é anexado. Este é um MVP de uso pessoal, não um serviço de nuvem.
 
@@ -32,10 +33,21 @@ node src/cli.js list expiring
 node src/cli.js list all Teclado
 node src/cli.js expiring 60
 node src/cli.js summary
+node src/cli.js export-csv > garantias.csv
 node src/cli.js remove compra-002
 ```
 
 O valor `15990` representa **R$ 159,90** (centavos), evitando erros de digitação com vírgula e ponto. Datas seguem `AAAA-MM-DD` e prazos são dias corridos, até dez anos (3650 dias).
+
+## Exportar planilha CSV
+
+O comando abaixo escreve **CSV UTF-8** na saída padrão; o redirecionamento cria o arquivo **somente no seu computador**:
+
+```bash
+node src/cli.js export-csv > garantias.csv
+```
+
+O arquivo inclui ID, produto, vendedor, data da compra, dias de garantia, preço em centavos, vencimento, dias restantes e status. O campo de anotação do comprovante não é exportado. A saída segue a ordem de vencimento, com proteção contra fórmulas em células de texto. Preserve o CSV fora do repositório, pois contém dados comerciais.
 
 ## Onde os dados ficam
 
