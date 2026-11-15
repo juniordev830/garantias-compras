@@ -108,4 +108,8 @@ Armazene recibos e dados reais apenas em ambiente controlado. Não há criptogra
 
 ## Licença
 
-Não definida.
+Ainda não definida.
+
+## Documentação para manutenção
+
+O [guia de validação](docs/GUIA_DE_VALIDACAO.md) contém testes de regressão, pontos críticos e critérios para revisar a próxima alteração.
