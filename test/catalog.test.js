@@ -81,6 +81,18 @@ test('calculates day-boundary expiration in UTC', () => {
   assert.throws(() => getWarranty(purchased, new Date(NaN)), /inválida/);
 });
 
+test('keeps early calendar years and sorts expirations beyond four digits', () => {
+  const early = item({ purchaseDate: '0099-12-31', warrantyDays: 1 });
+  assert.equal(getWarranty(early, new Date('0099-12-31T20:00:00Z')).remainingDays, 1);
+
+  const yearEnd = item({ id: 'year-end', purchaseDate: '9999-12-30', warrantyDays: 1 });
+  const nextYear = item({ id: 'next-year', purchaseDate: '9999-12-31', warrantyDays: 1 });
+  const result = listWarranties([nextYear, yearEnd], { today: new Date('9999-12-31T18:00:00Z') });
+  assert.deepEqual(result.map(({ expiresAt, remainingDays }) => [expiresAt, remainingDays]), [
+    ['9999-12-31', 0], ['+010000-01-01', 1],
+  ]);
+});
+
 test('filters by status and search, with deterministic expiry ordering', () => {
   const entries = [
     item({ id: 'future', product: 'Monitor', purchaseDate: '2026-11-01', warrantyDays: 100 }),

@@ -2,7 +2,6 @@ import { daysUntilWarrantyExpires } from './warranty.js';
 
 const MAX_ITEMS = 5000;
 const MAX_PRICE_CENTS = 1_000_000_000_00;
-const DAY_MS = 86_400_000;
 
 export function parseCalendarDate(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -103,18 +102,14 @@ export function getWarranty(item, today = new Date()) {
     throw new RangeError('data de referência inválida');
   }
   // Normalize dates to UTC calendar days to avoid timezone/DST surprises.
-  const currentDay = Date.UTC(
-    today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
-  );
-  const purchaseTime = parseCalendarDate(validated.purchaseDate).getTime();
-  const expiresTime = purchaseTime + validated.warrantyDays * DAY_MS;
-  const remainingDays = Math.round((expiresTime - currentDay) / DAY_MS);
-  const legacy = daysUntilWarrantyExpires(
-    new Date(purchaseTime), validated.warrantyDays, new Date(currentDay),
+  const currentDay = new Date(today.getTime());
+  currentDay.setUTCHours(0, 0, 0, 0);
+  const { expiresAt, remainingDays } = daysUntilWarrantyExpires(
+    parseCalendarDate(validated.purchaseDate), validated.warrantyDays, currentDay,
   );
   return {
     ...validated,
-    expiresAt: legacy.expiresAt.toISOString().slice(0, 10),
+    expiresAt: expiresAt.toISOString().split('T', 1)[0],
     remainingDays,
     status: remainingDays < 0 ? 'expired' : remainingDays <= 30 ? 'expiring' : 'valid',
   };
@@ -145,7 +140,7 @@ export function listWarranties(entries, options = {}) {
     .filter((item) => status === 'all' || item.status === status)
     .filter((item) => !search || [item.product, item.seller, item.id]
       .some((field) => field.toLocaleLowerCase('pt-BR').includes(search)))
-    .sort((a, b) => a.expiresAt.localeCompare(b.expiresAt) || a.id.localeCompare(b.id));
+    .sort((a, b) => a.remainingDays - b.remainingDays || a.id.localeCompare(b.id));
 }
 
 export function summarizeWarranties(entries, today = new Date()) {
