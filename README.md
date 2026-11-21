@@ -113,3 +113,5 @@ Ainda não definida.
 ## Documentação para manutenção
 
 O [guia de validação](docs/GUIA_DE_VALIDACAO.md) contém testes de regressão, pontos críticos e critérios para revisar a próxima alteração.
+\nA função de compatibilidade `daysUntilWarrantyExpires` exige uma data atual válida (`Date`) e rejeita resultados que ultrapassariam os limites de data do JavaScript, em vez de devolver um prazo inválido.\n
+Os campos `id`, `product` e `seller` devem ser strings; `receiptNote` pode ser omitido, mas, quando presente, também deve ser texto. Objetos e arrays não são mais convertidos silenciosamente para valores como `[object Object]`.

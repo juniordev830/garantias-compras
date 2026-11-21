@@ -126,3 +126,15 @@ test('summarizes purchases, invested value and upcoming warranties', () => {
     totalPriceCents: 0, nextExpiration: null,
   });
 });
+
+test('rejects object, array and numeric fields instead of stringifying them', () => {
+  for (const input of [
+    item({ id: 123 }),
+    item({ product: { value: 'Notebook' } }),
+    item({ seller: ['Loja'] }),
+    item({ receiptNote: { caminho: 'recibo.pdf' } }),
+  ]) {
+    assert.throws(() => validatePurchase(input), /devem ser texto/);
+  }
+  assert.equal(validatePurchase(item({ receiptNote: undefined })).receiptNote, '');
+});
