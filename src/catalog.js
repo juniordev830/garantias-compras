@@ -19,13 +19,17 @@ export function validatePurchase(input) {
     throw new TypeError('compra deve ser um objeto');
   }
 
-  const id = String(input.id ?? '').trim();
-  const product = String(input.product ?? '').trim();
-  const seller = String(input.seller ?? '').trim();
+  if (['id', 'product', 'seller'].some((field) => typeof input[field] !== 'string') ||
+      (input.receiptNote !== undefined && typeof input.receiptNote !== 'string')) {
+    throw new RangeError('identificador, produto, vendedor e anotação devem ser texto');
+  }
+  const id = input.id.trim();
+  const product = input.product.trim();
+  const seller = input.seller.trim();
   const purchaseDate = input.purchaseDate;
   const warrantyDays = input.warrantyDays;
   const priceCents = input.priceCents;
-  const receiptNote = String(input.receiptNote ?? '').trim();
+  const receiptNote = (input.receiptNote ?? '').trim();
 
   if (!/^[a-zA-Z0-9_-]{1,50}$/.test(id)) {
     throw new RangeError('id deve conter 1 a 50 caracteres alfanuméricos, _ ou -');
