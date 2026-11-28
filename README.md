@@ -1,5 +1,7 @@
 # Garantias e Compras
 
+**Navegação** · [Implementação nesta branch](#implementação-nesta-branch) · [Executar](#executar) · [Editar uma compra existente](#editar-uma-compra-existente) · [Código e estudo](docs/ENGENHARIA_REVERSA.md)
+
 Organizador local em **Node.js 20+**, sem dependências externas, para cadastrar compras e acompanhar prazos de garantia.
 
 ## Implementação nesta branch
@@ -115,3 +117,9 @@ Ainda não definida.
 O [guia de validação](docs/GUIA_DE_VALIDACAO.md) contém testes de regressão, pontos críticos e critérios para revisar a próxima alteração.
 \nA função de compatibilidade `daysUntilWarrantyExpires` exige uma data atual válida (`Date`) e rejeita resultados que ultrapassariam os limites de data do JavaScript, em vez de devolver um prazo inválido.\n
 Os campos `id`, `product` e `seller` devem ser strings; `receiptNote` pode ser omitido, mas, quando presente, também deve ser texto. Objetos e arrays não são mais convertidos silenciosamente para valores como `[object Object]`.
+
+## Código e roteiro de estudo
+
+Como deve se comportar um vencimento no próprio dia ao calcular dias restantes? O [guia de engenharia reversa](docs/ENGENHARIA_REVERSA.md) reúne o mapa dos módulos e uma pergunta técnica baseada no projeto.
+
+Mantido por [João Junior](https://github.com/juniordev830).
